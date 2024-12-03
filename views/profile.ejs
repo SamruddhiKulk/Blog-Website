@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ProfilePage</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background-image: url("images/profile_img3.jpeg");
+            background-size: 100vw 100vh;
+            margin: 0;
+            /* background-size: cover; */
+            background-attachment: fixed;
+            background-position: center;
+            margin: 0;
+        }
+
+        .profile-page-container {
+            display: flex;
+            max-width: 1200px;
+            margin: 20px;
+            padding: 20px;
+
+        }
+
+        @keyframes slideInFromLeft {
+            0% {
+                transform: translateX(-100%);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+        /* Animation for the blog-list container */
+        @keyframes slideInFromRight {
+            0% {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+
+            100% {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+
+
+        /* Styling for the user details section */
+        .user-details {
+            width: 20%;
+            height: 700px;
+            margin-right: 25px;
+            padding: 20px;
+            background-color: #f3f4f6;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            animation: slideInFromLeft 2s ease-out;
+            position: fixed;
+            /* Fixes the user details section */
+            top: 20px;
+            /* Keeps it 20px from the top of the viewport */
+            left: 20px;
+        }
+
+        .user-details button {
+            margin-top: 60px;
+            margin-left: 90px;
+            width: 100px;
+            /* border: 1px solid gray; */
+            border-radius: 8px;
+            background-color: gray;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            font-weight: bold;
+        }
+
+        /* Hover effect */
+        .createPost:hover {
+            background-color: black;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        /* Avatar image */
+        .profile-avatar {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 20px;
+        }
+
+        /* User name styling */
+        .profile-name {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        /* Username styling */
+        .profile-username {
+            color: #6b7280;
+            /* Gray color */
+            margin-bottom: 20px;
+        }
+
+        /* Blog list styling */
+        .blog-list {
+            width: 60%;
+            height: 40px;
+            margin-left: 60%;
+            animation: slideInFromRight 2s ease-out;
+        }
+
+        /* Blog post styling */
+        .blog-post {
+            margin-top: 10px;
+            margin-bottom: 20px;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .blog-post h3 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .blog-post p {
+            font-size: 16px;
+            color: #4b5563;
+        }
+
+        .update {
+            margin-right: 30px;
+            display: flex;
+            justify-content: end;
+            align-items: end;
+
+        }
+
+        .update a {
+            text-decoration: none;
+            font-size: 15px;
+            color: blue;
+        }
+
+        .update form button {
+            text-decoration: none;
+            color: red;
+            font-size: 15px;
+            outline: none;
+        }
+
+        .blog-post a {
+            margin-right: 10px;
+        }
+
+        .img img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin-top: 40px;
+            margin-bottom: 30px;
+            margin-left: 60px;
+        }
+
+        .img label {
+            display: block;
+            width: 200px;
+            background-color: aqua;
+            color: #fff;
+            padding: 12px;
+            margin: 10px auto;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 50px;
+        }
+
+        .img input {
+            display: none;
+        }
+
+        .product-image-container {
+            width: 80%;
+            height: 10rem;
+            background-color: #222;
+        }
+
+        .product-image {
+            height: 8rem;
+        }
+
+        .top-right-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            /* Ensures buttons are on top */
+        }
+
+        .top-right-buttons .button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-left: 10px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .top-right-buttons .button:hover {
+            background-color: blue;
+            transform: scale(1.05);
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="main">
+        <div class="profile-page-container">
+            <div class="user-details">
+
+                <h1 class="profile-name" name="name">
+                    <%= user.name %>
+                </h1>
+                <p class="profile-username" name="username">
+                    <%= user.username %>
+                </p>
+
+                <p><strong>Followers:</strong>
+                    <a href="javascript:void(0)" class="follower-count-link" id="toggle-followers">
+                        <%= user.followers.length %> Followers
+                    </a>
+                </p>
+
+                <!-- Hidden container for the followers list -->
+                <div id="followers-list" class="hidden mt-4">
+                    <ul class="list-disc pl-5" id="followers-container">
+                        <!-- Followers will be dynamically added here -->
+                    </ul>
+                </div>
+
+                <form class="img">
+
+                    <img src="images/profileimgage.jpeg" alt="User Profile Image" id="profile-pic">
+                    <label for="input-file">Update Image</label>
+                    <input type="file" accept="image/jpeg, image/png, image/jpg" id="input-file">
+
+                </form>
+
+
+                <p><strong>Email:</strong>
+                    <%= user.email %>
+                </p>
+                <!-- <p><strong>Location:</strong>
+                    <%= user.Address %>
+                </p> -->
+                <p><strong>Bio:</strong>
+                    <%= user.bio %>
+                </p>
+
+                <button class="createPost"><a href="/posts/create">Create Post</a></button>
+            </div>
+            <div class="blog-list">
+                <h2><b name="author">Blogs by <%= user.username %></b></h2>
+
+                <!-- Loop through the user's blogs and display each one -->
+                <% if (blogs.length> 0) { %>
+                    <% blogs.forEach(function(blog) { %>
+                        <div class="blog-post">
+                            <h3 name="title">
+                                <a href="/posts/post/<%= blog._id %>" class="post-link">
+                                    <%= blog.title %>
+                                </a>
+                            </h3>
+                            <h4 name="category">
+                                <%= blog.category %>
+                            </h4>
+                            <!-- <div class="product-image-container">
+                                <img class="product-image" src="data:image/jpeg;base64, <%= blog.image.contentType %>"
+                                    alt="">
+                            </div> -->
+
+                            <p name="content">
+                                <% const truncatedContent=blog.content.substring(0, 100); %>
+                                    <%= truncatedContent %>...
+                                        <a href="/posts/post/<%= blog._id %>" class="read-more-link">Read More</a>
+                            </p>
+                            <div class="update">
+                                <a href="/posts/edit/<%= blog._id %>">Edit</a>
+                                <form action="/posts/delete/<%= blog._id %>" method="POST"
+                                    onsubmit="return confirm('Are you sure you want to delete this post?');">
+                                    <button type="submit" class="delete-button">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                        <% }) %>
+                            <% } else { %>
+                                <p>No blogs yet. Start creating one!</p>
+                                <% } %>
+                                    <!-- Add more blog posts here -->
+            </div>
+            <!-- https://example.com/profile-images/user123.jpg -->
+        </div>
+
+        <div class="top-right-buttons">
+            <a href="/" class="button">Home</a>
+            <a href="/logout" class="button">Logout</a>
+        </div>
+    </div>
+
+    <script>
+
+        document.getElementById('toggle-followers').addEventListener('click', function () {
+            const followersList = document.getElementById('followers-list');
+
+            // Check if the followers list is already visible
+            if (followersList.classList.contains('hidden')) {
+                // Fetch the followers via AJAX
+                fetch('/users/<%= user._id %>/followers-json') // This route returns the followers in JSON format
+                    .then(response => response.json())
+                    .then(data => {
+                        const followersContainer = document.getElementById('followers-container');
+                        followersContainer.innerHTML = ''; // Clear any previous followers
+
+                        if (data.followers.length > 0) {
+                            data.followers.forEach(follower => {
+                                const listItem = document.createElement('li');
+                                listItem.innerHTML = `<a href="/users/${follower._id}">${follower.username}</a>`;
+                                followersContainer.appendChild(listItem);
+                            });
+                        } else {
+                            followersContainer.innerHTML = '<li>No followers yet.</li>';
+                        }
+
+                        // Show the followers list
+                        followersList.classList.remove('hidden');
+                    })
+                    .catch(err => {
+                        console.error('Error fetching followers:', err);
+                    });
+            } else {
+                // Hide the followers list if it's already visible
+                followersList.classList.add('hidden');
+            }
+        });
+
+
+    </script>
+</body>
+
+
+</html>

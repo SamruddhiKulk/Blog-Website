@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Profile</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-image: url("images/profile_img3.jpeg");
+            background-size: 100vw 100vh;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .makeProfile {
+            /* background-color: ; */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(3, 3, 3, 1);
+            opacity: 2;
+            width: 500px;
+            background: transparent;
+            backdrop-filter: blur(10px);
+        }
+
+        .create {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .create h3 {
+            margin: 0;
+            font-size: 24px;
+
+        }
+
+        #create {
+            display: inline-block;
+            overflow: hidden;
+            white-space: nowrap;
+            animation: typing 3s steps(30, end) infinite;
+        }
+
+        @keyframes typing {
+            from {
+                width: 0;
+            }
+
+            to {
+                width: 100%;
+            }
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input,
+        textarea,
+        button {
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 20px;
+            font-size: 16px;
+            border: 0.5px solid none;
+            opacity: none;
+            background: transparent;
+        }
+
+        textarea {
+            resize: none;
+            height: 100px;
+        }
+
+        button {
+            background: transparent;
+            color: black;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+
+        }
+
+        button:hover {
+            background-color: gray;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="makeProfile">
+        <div class="create">
+            <h3 id="create">Create Profile</h3>
+        </div>
+        <form>
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" placeholder="Enter your name" required>
+
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" placeholder="Enter your email" required>
+
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+
+            <label for="DoB">Date of birth</label>
+            <input type="date" id="Dob" name="Dob" required>
+
+            <label for="bio">Bio</label>
+            <textarea id="bio" name="bio" placeholder="Tell us about yourself"></textarea>
+
+
+            <button type="submit"><b>Create Profile</b></button>
+        </form>
+    </div>
+</body>
+
+</html>

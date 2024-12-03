@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        <%= post.title %>
+    </title>
+    <style>
+        body {
+            background-image: url(images/profile_img3.jpeg);
+            background-size: 100vw 100vh;
+            margin: 0;
+            /* background-size: cover; */
+            background-attachment: fixed;
+            background-position: center;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .post-title {
+            font-size: 2em;
+            color: #333;
+        }
+
+        .post-date {
+            color: #888;
+            font-size: 0.9em;
+        }
+
+        .post-content {
+            margin-top: 20px;
+            line-height: 1.6;
+        }
+
+        .post-image img {
+            max-width: 100%;
+            border-radius: 5px;
+        }
+
+        .comments-section {
+            margin-top: 40px;
+        }
+
+        .comments-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .comment {
+            background: #f9f9f9;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .comment-form {
+            margin-top: 20px;
+            border-top: 1px solid #ccc;
+            padding-top: 20px;
+        }
+
+        .comment-form h3 {
+            margin-bottom: 10px;
+        }
+
+        .comment-form textarea {
+            width: 90%;
+            height: 40px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid gray;
+            padding: 10px;
+        }
+
+        .comment-form button {
+            background: #007bff ;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .comment-form button:hover {
+            background: #0056b3;
+        }
+
+        .top-right-buttons {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+            /* Ensures buttons are on top */
+        }
+
+        .top-right-buttons .button {
+            padding: 10px 20px;
+            background-color: #333;
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-left: 10px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .top-right-buttons .button:hover {
+            background-color: blue;
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1 class="post-title">
+            <%= post.title %>
+        </h1>
+        <p class="post-date">
+            <%= new Date(post.date).toLocaleDateString() %>
+        </p>
+
+        <div class="post-content">
+            <%= post.content %>
+        </div>
+
+        <div class="post-image">
+            <% if (post.image && post.image.url) { %>
+                <img src="<%= post.image.url %>" alt="Post Image">
+                <% } %>
+        </div>
+
+        <div class="comments-section">
+            <h2>Comments</h2>
+            <ul class="comments-list">
+                <% post.comments.slice(0, 5).forEach(comment=> { %> <!-- Display first 5 comments initially -->
+                    <li class="comment">
+                        <strong>
+                            <%= comment.username %>:
+                        </strong>
+                        <p>
+                            <%= comment.content %>
+                        </p>
+                    </li>
+                    <% }) %>
+            </ul>
+
+            <!-- "Show More" button -->
+            <% if (post.comments.length> 4) { %>
+                <button id="show-more-btn" data-post-id="<%= post._id %>" class="show-more">Show More Comments</button>
+                <button id="show-less-btn" style="display:none;" class="show-less">Show Less Comments</button>
+                <% } %>
+        </div>
+
+        <div class="comment-form">
+            <h3>Add a Comment</h3>
+            <form action="/posts/comment/<%= post._id %>" method="POST">
+                <input type="text" name=" user " placeholder="<%= user.name %>" style="display: none;">
+                <textarea name="content" placeholder="Your Comment"></textarea>
+                <button type="submit">Submit</button>
+                <!-- <input type="text" name="content" required>
+                <button type="submit">Submit</button> --> 
+            </form>
+        </div>
+
+        <div class="top-right-buttons">
+            <a href="/" class="button">Home</a>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript to load more comments when "Show More" button is clicked
+        document.getElementById('show-more-btn')?.addEventListener('click', function () {
+            const postId = this.getAttribute('data-post-id');
+            let currentCommentCount = document.querySelectorAll('.comments-list .comment').length;
+
+            // Fetch more comments via an API (adjust the route according to your server)
+            fetch(`/posts/${postId}/comments?offset=${currentCommentCount}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.comments && data.comments.length > 0) {
+                        const commentsList = document.querySelector('.comments-list');
+                        data.comments.forEach(comment => {
+                            const commentItem = document.createElement('li');
+                            commentItem.className = 'comment';
+                            commentItem.innerHTML = `
+                                <strong>${comment.username}:</strong>
+                                <p>${comment.content}</p>
+                            `;
+                            commentsList.appendChild(commentItem);
+                        });
+
+                        // If there are no more comments to load, hide the "Show More" button
+                        if (!data.hasMoreComments) {
+                            document.getElementById('show-more-btn').style.display = 'none';
+                        }
+                        document.getElementById('show-less-btn').style.display = 'block';
+                    
+                    }
+                });
+        });
+
+        document.getElementById('show-less-btn')?.addEventListener('click', function () {
+            const commentsList = document.querySelectorAll('.comments-list .comment');
+            commentsList.forEach((comment, index) => {
+                if (index >= 5) { // Keep the first 5 comments, hide the rest
+                    comment.remove();
+                }
+            });
+
+            // Show "Show More" button again and hide "Show Less"
+            document.getElementById('show-more-btn').style.display = 'block';
+            document.getElementById('show-less-btn').style.display = 'none';
+        });
+    </script>
+</body>
+
+</html>
